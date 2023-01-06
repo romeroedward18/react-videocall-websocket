@@ -50,3 +50,35 @@
   align-items: center;
   height: 100vh;
 }
+
+.videocall-container {
+  position: relative;
+  height: 100vh;
+}
+
+.bottom-actions-container {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 16px 0px;
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  padding: 6px 0px;
+  border-radius: 15px !important;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.42857;
+}
+
+.btn-circle.x1-5 {
+  transform: scale(1.5);
+  padding: 0px 0px;
+  font-size: 16px;
+}
+
+.btn-circle.x2 {
+  transform: scale(2);
+}
