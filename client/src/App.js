@@ -35,6 +35,7 @@ function App() {
   const secondVideoRef = useRef(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [sessionCode, setSessionCode] = useState("");
+  const peers = {};
 
   // Función para reproducir el archivo de audio
   function playAudio() {
@@ -70,10 +71,17 @@ function App() {
     });
 
     socket.on("user-connected", handleUserConnected);
+
+    socket.on("user-disconnected", (userId) => {
+      if (peers[userId]) peers[userId].close();
+      playAudio();
+    });
+
     // Desconectamos los handlers cuando se desmonta el componente
     return () => {
       socket.off("connect");
       socket.off("user-connected");
+      socket.off("user-disconnected");
     };
   }, []);
 
@@ -102,6 +110,7 @@ function App() {
       videoRef.current.srcObject = null;
       playAudio();
     });
+    peers[userId] = call;
   }
 
   return (
@@ -149,15 +158,13 @@ function App() {
                   md="4"
                   className="d-flex justify-content-center"
                 >
-                  <Link to="/">
-                    <Button
-                      className="btn-circle x1-5"
-                      variant="danger"
-                      onClick={() => playAudio()}
-                    >
-                      <MdCallEnd />
-                    </Button>
-                  </Link>
+                  <Button
+                    className="btn-circle x1-5"
+                    variant="danger"
+                    onClick={() => (window.location.href = "/")}
+                  >
+                    <MdCallEnd />
+                  </Button>
                 </Col>
                 <Col xs sm="12" md="4" className="d-flex justify-content-end">
                   <OverlayTrigger
