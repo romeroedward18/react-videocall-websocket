@@ -51,7 +51,6 @@ function App() {
     socket.on("connect", () => {
       peer.on("open", (id) => {
         if (searchParams.get("sessionCode")) {
-          socket.emit("join-room", searchParams.get("sessionCode"), id);
           navigator.mediaDevices.enumerateDevices().then((devices) => {
             const hasCamera = devices.some(
               (device) => device.kind === "videoinput"
@@ -62,6 +61,7 @@ function App() {
             navigator.mediaDevices
               .getUserMedia({ video: hasCamera, audio: hasMicrophone })
               .then((stream) => {
+                socket.emit("join-room", searchParams.get("sessionCode"), id);
                 videoRef.current.srcObject = stream;
                 peer.on("call", (call) => {
                   call.answer(stream);
