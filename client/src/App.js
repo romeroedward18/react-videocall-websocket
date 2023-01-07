@@ -16,18 +16,22 @@ import Popover from "react-bootstrap/Popover";
 import { MdCallEnd, MdShare } from "react-icons/md";
 
 // Establecer la conexión con Socket.io
-const socket = io(
-  window.location.toString().includes("localhost")
-    ? process.env.REACT_APP_API
-    : process.env.REACT_APP_RENDER_API
-);
+const socket = io(process.env.REACT_APP_API);
 
 // Establecer la conexión WebRTC con Peer.js
-const peer = new Peer(undefined, {
-  host: window.location.hostname,
-  port: 9000,
-  path: "/myapp",
-});
+const peer = new Peer(
+  undefined,
+  process.env.REACT_APP_ENV === "production"
+    ? {
+        host: "videocall-websocket-api.onrender.com",
+        port: 443,
+      }
+    : {
+        host: "localhost",
+        port: 9000,
+        path: "/myapp",
+      }
+);
 
 function App() {
   const audioPlayer = useRef(null);
