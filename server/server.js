@@ -2,23 +2,6 @@ require("dotenv").config();
 const fs = require("fs");
 const { PeerServer } = require("peer");
 
-if (process.env.NODE_ENV === "production") {
-  const peerServer = PeerServer({
-    secure: true,
-    host: "videocall-websocket-api.onrender.com",
-    port: 443,
-    /*ssl: {
-      key: fs.readFileSync("./privateKey.key"),
-      cert: fs.readFileSync("./certificate.crt"),
-    },*/
-  });
-} else {
-  const peerServer = PeerServer({
-    port: 9000,
-    path: "/myapp",
-  });
-}
-
 const cors = require("./corsConfig");
 
 const io = require("socket.io")(3001, {
@@ -44,3 +27,17 @@ io.on("connection", (socket) => {
     console.log(`disconnect: ${socket.id}`);
   });
 });
+
+if (process.env.NODE_ENV === "production") {
+  const peerServer = PeerServer({
+    secure: true,
+    port: 443,
+    path: "/myapp",
+
+  });
+} else {
+  const peerServer = PeerServer({
+    port: 9000,
+    path: "/myapp",
+  });
+}

@@ -25,6 +25,7 @@ const peer = new Peer(
     ? {
         host: "videocall-websocket-api.onrender.com",
         port: 443,
+        path: "/myapp",
       }
     : {
         host: "localhost",
