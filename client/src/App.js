@@ -24,7 +24,7 @@ const peer = new Peer(
   process.env.REACT_APP_ENV === "production"
     ? {
         host: "videocall-websocket-api.onrender.com",
-        port: 443,
+        port: 9000,
         path: "/myapp",
       }
     : {
@@ -33,6 +33,8 @@ const peer = new Peer(
         path: "/myapp",
       }
 );
+
+console.log(peer);
 
 function App() {
   const audioPlayer = useRef(null);

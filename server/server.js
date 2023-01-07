@@ -31,7 +31,7 @@ io.on("connection", (socket) => {
 if (process.env.NODE_ENV === "production") {
   const peerServer = PeerServer({
     secure: true,
-    port: 443,
+    port: 9000,
     path: "/myapp",
 
   });
