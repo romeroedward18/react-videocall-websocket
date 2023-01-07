@@ -1,5 +1,4 @@
 require("dotenv").config();
-const fs = require("fs");
 const { PeerServer } = require("peer");
 
 const cors = require("./corsConfig");
