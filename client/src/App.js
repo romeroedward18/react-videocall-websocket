@@ -34,8 +34,6 @@ const peer = new Peer(
       }
 );
 
-console.log(peer);
-
 function App() {
   const audioPlayer = useRef(null);
   const videoRef = useRef(null);
@@ -67,9 +65,9 @@ function App() {
                 videoRef.current.srcObject = stream;
                 peer.on("call", (call) => {
                   call.answer(stream);
-                });
-                peer.on("stream", (userVideoStream) => {
-                  secondVideoRef.current.srcObject = userVideoStream;
+                  call.on("stream", (userVideoStream) => {
+                    secondVideoRef.current.srcObject = userVideoStream;
+                  });
                 });
               });
           });
@@ -114,10 +112,11 @@ function App() {
       secondVideoRef.current.srcObject = stream;
     });
     call.on("close", () => {
-      videoRef.current.srcObject = null;
+      secondVideoRef.current.srcObject = null;
       playAudio();
     });
     peers[userId] = call;
+    playAudio();
   }
 
   return (
