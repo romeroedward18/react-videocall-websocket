@@ -23,6 +23,7 @@ const peer = new Peer(
   undefined,
   process.env.REACT_APP_ENV === "production"
     ? {
+        secure: true,
         host: "0.peerjs.com",
         port: "443",
       }

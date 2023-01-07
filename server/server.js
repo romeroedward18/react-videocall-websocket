@@ -28,13 +28,7 @@ io.on("connection", (socket) => {
   });
 });
 
-if (process.env.NODE_ENV === "production") {
-  const peerServer = PeerServer({
-    secure: true,
-    host: "0.peerjs.com",
-    port: "443",
-  });
-} else {
+if (process.env.NODE_ENV === "development") {
   const peerServer = PeerServer({
     port: 9000,
     path: "/myapp",
