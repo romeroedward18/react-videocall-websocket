@@ -23,9 +23,8 @@ const peer = new Peer(
   undefined,
   process.env.REACT_APP_ENV === "production"
     ? {
-        host: "videocall-websocket-api.onrender.com",
-        port: 9000,
-        path: "/myapp",
+        host: "0.peerjs.com",
+        port: "443",
       }
     : {
         host: "localhost",
