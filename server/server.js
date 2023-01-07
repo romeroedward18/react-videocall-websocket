@@ -1,5 +1,26 @@
+require("dotenv").config();
+const fs = require("fs");
 const { PeerServer } = require("peer");
-const peerServer = PeerServer({ port: 9000, path: "/myapp" });
+
+console.log(process.env.NODE_ENV);
+console.log(process.env.NODE_ENV_RENDER);
+
+if (process.env.NODE_ENV_RENDER || process.env.NODE_ENV === "production") {
+  const peerServer = PeerServer({
+    port: 9000,
+    path: "/myapp",
+    ssl: {
+      key: fs.readFileSync("./privateKey.key"),
+      cert: fs.readFileSync("./certificate.crt"),
+    },
+  });
+} else {
+  const peerServer = PeerServer({
+    port: 9000,
+    path: "/myapp",
+  });
+}
+
 const cors = require("./corsConfig");
 
 const io = require("socket.io")(3001, {

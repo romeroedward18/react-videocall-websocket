@@ -2,7 +2,7 @@ import "./App.css";
 import logo from "./logo.svg";
 import NotificationSound from "./notification-sound.mp3";
 import React, { useRef, useState, useEffect } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { io } from "socket.io-client";
 import { Peer } from "peerjs";
