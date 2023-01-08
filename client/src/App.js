@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { io } from "socket.io-client";
 import { Peer } from "peerjs";
+import Spinner from "react-bootstrap/Spinner";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -17,7 +18,6 @@ import { MdCallEnd, MdShare } from "react-icons/md";
 
 // Establecer la conexión con Socket.io
 const socket = io(process.env.REACT_APP_API);
-console.log(socket);
 
 // Establecer la conexión WebRTC con Peer.js
 const peer = new Peer(
@@ -40,6 +40,7 @@ function App() {
   const videoRef = useRef(null);
   const secondVideoRef = useRef(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [connected, setConnected] = useState(false);
   const [sessionCode, setSessionCode] = useState("");
   const peers = {};
 
@@ -50,6 +51,7 @@ function App() {
 
   useEffect(() => {
     socket.on("connect", () => {
+      setConnected(true);
       peer.on("open", (id) => {
         if (searchParams.get("sessionCode")) {
           navigator.mediaDevices.enumerateDevices().then((devices) => {
@@ -74,13 +76,13 @@ function App() {
           });
         }
       });
-    });
 
-    socket.on("user-connected", handleUserConnected);
+      socket.on("user-connected", handleUserConnected);
 
-    socket.on("user-disconnected", (userId) => {
-      if (peers[userId]) peers[userId].close();
-      playAudio();
+      socket.on("user-disconnected", (userId) => {
+        if (peers[userId]) peers[userId].close();
+        playAudio();
+      });
     });
 
     // Desconectamos los handlers cuando se desmonta el componente
@@ -123,134 +125,149 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Container>
-          {searchParams.get("sessionCode") ? (
-            <div className="videocall-container">
-              <video
-                ref={videoRef}
-                style={{
-                  backgroundImage: `url(${logo})`,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  backgroundColor: "black",
-                  width: "45%",
-                  margin: "50px 10px",
-                }}
-                autoPlay={true}
-                muted
-              />
-              <video
-                ref={secondVideoRef}
-                style={{
-                  backgroundImage: `url(${logo})`,
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  backgroundColor: "black",
-                  width: "45%",
-                  margin: "50px 10px",
-                }}
-                autoPlay={true}
-              />
-              <Row className="bottom-actions-container">
-                <Col xs sm="12" md="4" className="d-flex justify-content-start">
-                  <p className="text-white">
-                    {searchParams.get("sessionCode")}
-                  </p>
-                </Col>
-                <Col
-                  xs
-                  sm="12"
-                  md="4"
-                  className="d-flex justify-content-center"
-                >
-                  <Button
-                    className="btn-circle x1-5"
-                    variant="danger"
-                    onClick={() => (window.location.href = "/")}
+        {connected ? (
+          <Container>
+            {searchParams.get("sessionCode") ? (
+              <div className="videocall-container">
+                <video
+                  ref={videoRef}
+                  style={{
+                    backgroundImage: `url(${logo})`,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundColor: "black",
+                    width: "45%",
+                    margin: "50px 10px",
+                  }}
+                  autoPlay={true}
+                  muted
+                />
+                <video
+                  ref={secondVideoRef}
+                  style={{
+                    backgroundImage: `url(${logo})`,
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundColor: "black",
+                    width: "45%",
+                    margin: "50px 10px",
+                  }}
+                  autoPlay={true}
+                />
+                <Row className="bottom-actions-container">
+                  <Col
+                    xs
+                    sm="12"
+                    md="4"
+                    className="d-flex justify-content-start"
                   >
-                    <MdCallEnd />
-                  </Button>
-                </Col>
-                <Col xs sm="12" md="4" className="d-flex justify-content-end">
-                  <OverlayTrigger
-                    trigger="click"
-                    placement={"top"}
-                    overlay={
-                      <Popover id={`copy-btn`}>
-                        <Popover.Header as="h3">
-                          Comparte esta videollamada
-                        </Popover.Header>
-                        <Popover.Body>
-                          <p>
-                            <strong>Enlace directo: </strong>
-                            {window.location.href}
-                          </p>
-                          <p>
-                            <strong>Código: </strong>
-                            {searchParams.get("sessionCode")}
-                          </p>
-                        </Popover.Body>
-                      </Popover>
-                    }
+                    <p className="text-white">
+                      {searchParams.get("sessionCode")}
+                    </p>
+                  </Col>
+                  <Col
+                    xs
+                    sm="12"
+                    md="4"
+                    className="d-flex justify-content-center"
                   >
-                    <Button className="btn-circle x1-5" variant="outline-light">
-                      <MdShare />
+                    <Button
+                      className="btn-circle x1-5"
+                      variant="danger"
+                      onClick={() => (window.location.href = "/")}
+                    >
+                      <MdCallEnd />
                     </Button>
-                  </OverlayTrigger>
+                  </Col>
+                  <Col xs sm="12" md="4" className="d-flex justify-content-end">
+                    <OverlayTrigger
+                      trigger="click"
+                      placement={"top"}
+                      overlay={
+                        <Popover id={`copy-btn`}>
+                          <Popover.Header as="h3">
+                            Comparte esta videollamada
+                          </Popover.Header>
+                          <Popover.Body>
+                            <p>
+                              <strong>Enlace directo: </strong>
+                              {window.location.href}
+                            </p>
+                            <p>
+                              <strong>Código: </strong>
+                              {searchParams.get("sessionCode")}
+                            </p>
+                          </Popover.Body>
+                        </Popover>
+                      }
+                    >
+                      <Button
+                        className="btn-circle x1-5"
+                        variant="outline-light"
+                      >
+                        <MdShare />
+                      </Button>
+                    </OverlayTrigger>
+                  </Col>
+                </Row>
+              </div>
+            ) : (
+              <Row>
+                <Col xs sm="12" md="6">
+                  <div className="join-room-container">
+                    <h1>Puedes realizar videollamadas aquí.</h1>
+                    <p>
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                      sed do eiusmod tempor incididunt ut labore et dolore magna
+                      aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                      ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                      Duis aute irure dolor in reprehenderit in voluptate velit
+                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
+                      sint occaecat cupidatat non proident, sunt in culpa qui
+                      officia deserunt mollit anim id est laborum."
+                    </p>
+                    <Row>
+                      <Col sm="12" md="5">
+                        <Button onClick={() => handleNewSession()}>
+                          Nueva sesión
+                        </Button>
+                      </Col>
+                      <Col sm="12" md="7">
+                        <Form className="d-flex" onSubmit={handleSubmit}>
+                          <Form.Control
+                            type="text"
+                            placeholder="Introduce el código de la reunión"
+                            name="sessionCode"
+                            value={sessionCode}
+                            onChange={handleInputChange}
+                            className="me-2"
+                            required
+                          />
+                          <Button type="submit" variant="outline-light">
+                            Unirte
+                          </Button>
+                        </Form>
+                      </Col>
+                    </Row>
+                  </div>
+                </Col>
+                <Col xs sm="12" lg="6">
+                  <div className="image-container">
+                    <img src={logo} alt="Logo" className="App-logo" />
+                  </div>
                 </Col>
               </Row>
-            </div>
-          ) : (
-            <Row>
-              <Col xs sm="12" md="6">
-                <div className="join-room-container">
-                  <h1>Puedes realizar videollamadas aquí.</h1>
-                  <p>
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in voluptate velit
-                    esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-                    occaecat cupidatat non proident, sunt in culpa qui officia
-                    deserunt mollit anim id est laborum."
-                  </p>
-                  <Row>
-                    <Col sm="12" md="5">
-                      <Button onClick={() => handleNewSession()}>
-                        Nueva sesión
-                      </Button>
-                    </Col>
-                    <Col sm="12" md="7">
-                      <Form className="d-flex" onSubmit={handleSubmit}>
-                        <Form.Control
-                          type="text"
-                          placeholder="Introduce el código de la reunión"
-                          name="sessionCode"
-                          value={sessionCode}
-                          onChange={handleInputChange}
-                          className="me-2"
-                          required
-                        />
-                        <Button type="submit" variant="outline-light">
-                          Unirte
-                        </Button>
-                      </Form>
-                    </Col>
-                  </Row>
-                </div>
-              </Col>
-              <Col xs sm="12" lg="6">
-                <div className="image-container">
-                  <img src={logo} alt="Logo" className="App-logo" />
-                </div>
-              </Col>
-            </Row>
-          )}
-        </Container>
-        <audio ref={audioPlayer} src={NotificationSound} />
+            )}
+            <audio ref={audioPlayer} src={NotificationSound} />
+          </Container>
+        ) : (
+          <div className="spinner-container">
+            <Spinner className="spinner-icon" variant="light"></Spinner>
+            <span>Cargando...</span>
+          </div>
+        )}
       </header>
     </div>
   );

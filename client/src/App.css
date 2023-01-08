@@ -82,3 +82,19 @@
 .btn-circle.x2 {
   transform: scale(2);
 }
+
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 32px;
+  color: white;
+}
+
+.spinner-icon {
+  width: 100px !important;
+  height: 100px !important;
+  margin: 16px;
+}
