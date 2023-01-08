@@ -88,8 +88,6 @@ function App() {
     // Desconectamos los handlers cuando se desmonta el componente
     return () => {
       socket.off("connect");
-      socket.off("user-connected");
-      socket.off("user-disconnected");
     };
   }, []);
 
