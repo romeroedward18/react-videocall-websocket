@@ -89,6 +89,7 @@ function App() {
     return () => {
       socket.off("connect");
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleNewSession() {
@@ -217,14 +218,14 @@ function App() {
                   <div className="join-room-container">
                     <h1>Puedes realizar videollamadas aquí.</h1>
                     <p>
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                      ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                      Duis aute irure dolor in reprehenderit in voluptate velit
-                      esse cillum dolore eu fugiat nulla pariatur. Excepteur
-                      sint occaecat cupidatat non proident, sunt in culpa qui
-                      officia deserunt mollit anim id est laborum."
+                      Si ingresas un código que ya existe, te unirás a una sala
+                      existente y podrás hablar con otro usuario que se haya
+                      unido a la misma sala. Si ingresas un código nuevo, se
+                      creará una nueva sala y podrás esperar a que otro usuario
+                      se una a ella. Una vez que estés conectado a una sala,
+                      podrás ver el video de tu compañero de videollamada y
+                      hablar con él/ella. Si deseas finalizar la llamada,
+                      simplemente haz clic en el botón central de color rojo.
                     </p>
                     <Row>
                       <Col sm="12" md="5">

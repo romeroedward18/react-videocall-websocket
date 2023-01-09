@@ -60,13 +60,13 @@
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: 16px 0px;
+  padding: 16px 0;
 }
 
 .btn-circle {
   width: 30px;
   height: 30px;
-  padding: 6px 0px;
+  padding: 6px 0;
   border-radius: 15px !important;
   text-align: center;
   font-size: 12px;
@@ -75,7 +75,7 @@
 
 .btn-circle.x1-5 {
   transform: scale(1.5);
-  padding: 0px 0px;
+  padding: 0;
   font-size: 16px;
 }
 
